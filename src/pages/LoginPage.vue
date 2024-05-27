@@ -65,6 +65,7 @@
 
 <script>
 import { required } from "vuelidate/lib/validators";
+import {mockLogin} from "../services/auth.js"
 export default {
   name: "Login",
   data() {
@@ -94,17 +95,19 @@ export default {
     async Login() {
       try {
         
-        const response = await this.axios.post(
-          // "https://test-for-3-2.herokuapp.com/user/Login",
-          this.$root.store.server_domain +"/Login",
-          // "http://132.72.65.211:80/Login",
-          // "http://132.73.84.100:80/Login",
+        // const response = await this.axios.post(
+        //   this.$root.store.server_domain +"/Login",
 
-          {
-            username: this.form.username,
-            password: this.form.password
-          }
-        );
+
+        //   {
+        //     username: this.form.username,
+        //     password: this.form.password
+        //   }
+        // );
+
+        const success = true; // modify this to test the error handling
+        const response = mockLogin(this.form.username, this.form.password, success);
+
         // console.log(response);
         // this.$root.loggedIn = true;
         console.log(this.$root.store.login);
@@ -115,6 +118,7 @@ export default {
         this.form.submitError = err.response.data.message;
       }
     },
+
     onLogin() {
       // console.log("login method called");
       this.form.submitError = undefined;

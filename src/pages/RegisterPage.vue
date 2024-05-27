@@ -129,7 +129,7 @@ import {
   sameAs,
   email
 } from "vuelidate/lib/validators";
-
+import { mockRegister } from "../services/auth.js";
 export default {
   name: "Register",
   data() {
@@ -181,15 +181,24 @@ export default {
     },
     async Register() {
       try {
-        const response = await this.axios.post(
-          // "https://test-for-3-2.herokuapp.com/user/Register",
-          this.$root.store.server_domain + "/Register",
 
-          {
-            username: this.form.username,
-            password: this.form.password
-          }
-        );
+        // const response = await this.axios.post(
+        //   // "https://test-for-3-2.herokuapp.com/user/Register",
+        //   this.$root.store.server_domain + "/Register",
+
+        //   {
+        //     username: this.form.username,
+        //     password: this.form.password
+        //   }
+        // );
+
+        const userDetails = {
+          username: this.form.username,
+          password: this.form.password
+        };
+
+        const response = mockRegister(userDetails);
+
         this.$router.push("/login");
         // console.log(response);
       } catch (err) {
@@ -197,6 +206,7 @@ export default {
         this.form.submitError = err.response.data.message;
       }
     },
+
     onRegister() {
       // console.log("register method called");
       this.$v.form.$touch();

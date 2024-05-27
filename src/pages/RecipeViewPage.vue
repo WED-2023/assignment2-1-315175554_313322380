@@ -42,6 +42,7 @@
 </template>
 
 <script>
+import { mockGetRecipeFullDetails } from "../services/recipes.js";
 export default {
   data() {
     return {
@@ -54,12 +55,14 @@ export default {
       // response = this.$route.params.response;
 
       try {
-        response = await this.axios.get(
-          this.$root.store.server_domain + "/recipes/" + this.$route.params.recipeId,
-          {
-            withCredentials: true
-          }
-        );
+        // response = await this.axios.get(
+        //   this.$root.store.server_domain + "/recipes/" + this.$route.params.recipeId,
+        //   {
+        //     withCredentials: true
+        //   }
+        // );
+
+        response = mockGetRecipeFullDetails(this.$route.params.recipeId);
 
         // console.log("response.status", response.status);
         if (response.status !== 200) this.$router.replace("/NotFound");
