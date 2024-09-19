@@ -4,6 +4,7 @@ import VueAxios from "vue-axios";
 import axios from "axios";
 
 import routes from "./routes";
+//import vue Router and install it as a plugin --> enabling this.$router
 import VueRouter from "vue-router";
 Vue.use(VueRouter);
 const router = new VueRouter({
@@ -70,13 +71,13 @@ const shared_data = {
   server_domain: "http://localhost:3000",
   username: localStorage.username,
   login(username) {
-    localStorage.setItem("username", username);
+    localStorage.setItem("username", username); //when we connect- set item to the username
     this.username = username;
     console.log("login", this.username);
   },
   logout() {
     console.log("logout");
-    localStorage.removeItem("username");
+    localStorage.removeItem("username");//remove when finish
     this.username = undefined;
   },
 };
@@ -84,7 +85,7 @@ console.log(shared_data);
 // Vue.prototype.$root.store = shared_data;
 
 new Vue({
-  router,
+  router, //add the router to the main vue object
   data() {
     return {
       store: shared_data,

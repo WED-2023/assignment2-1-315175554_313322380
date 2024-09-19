@@ -12,7 +12,7 @@
           id="username"
           v-model="$v.form.username.$model"
           type="text"
-          :state="validateState('username')"
+          :state="validateState('username')" 
         ></b-form-input>
         <b-form-invalid-feedback v-if="!$v.form.username.required">
           Username is required
@@ -154,7 +154,7 @@ export default {
       username: {
         required,
         length: (u) => minLength(3)(u) && maxLength(8)(u),
-        alpha
+        alpha //if i want the user name to be all with leters
       },
       country: {
         required
@@ -165,7 +165,7 @@ export default {
       },
       confirmedPassword: {
         required,
-        sameAsPassword: sameAs("password")
+        sameAsPassword: sameAs("password") //if i want the confirm password to be identical to the password
       }
     }
   },
@@ -203,11 +203,11 @@ export default {
         // console.log(response);
       } catch (err) {
         console.log(err.response);
-        this.form.submitError = err.response.data.message;
+        this.form.submitError = err.response.data.message; //the response is in auth.js
       }
     },
 
-    onRegister() {
+    onRegister() { //when we click on 'submit'
       // console.log("register method called");
       this.$v.form.$touch();
       if (this.$v.form.$anyError) {

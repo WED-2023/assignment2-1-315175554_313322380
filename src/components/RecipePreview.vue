@@ -4,7 +4,7 @@
     class="recipe-preview"
   >
     <div class="recipe-body">
-      <img v-if="image_load" :src="recipe.image" class="recipe-image" />
+      <img  :src="recipe.image" class="recipe-image" />
     </div>
     <div class="recipe-footer">
       <div :title="recipe.title" class="recipe-title">
@@ -20,14 +20,10 @@
 
 <script>
 export default {
-  mounted() {
-    this.axios.get(this.recipe.image).then((i) => {
-      this.image_load = true;
-    });
-  },
-  data() {
+
+ data() {
     return {
-      image_load: false
+    //  image_load: false
     };
   },
   props: {
@@ -62,80 +58,76 @@ export default {
   }
 };
 </script>
-
 <style scoped>
 .recipe-preview {
-  display: inline-block;
-  width: 90%;
-  height: 100%;
-  position: relative;
-  margin: 10px 10px;
+  display: block;
+  width: 100%; /* Ensures the card takes full width in its container */
+  max-width: 400px;
+  margin: 10px auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: #fff;
 }
+
+.recipe-preview:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
 .recipe-preview > .recipe-body {
   width: 100%;
-  height: 200px;
+  height: 120px; /* Smaller height for the photo */
   position: relative;
+  border-bottom: 1px solid #ddd;
 }
 
 .recipe-preview .recipe-body .recipe-image {
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: auto;
-  margin-bottom: auto;
+  margin: auto;
   display: block;
-  width: 98%;
-  height: auto;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  background-size: cover;
+  width: 100%; /* Full width */
+  height: 100%; /* Adjust height to fit the smaller container */
+  object-fit: cover; /* Ensures the image scales properly */
+  border-radius: 8px 8px 0 0;
+  transition: opacity 0.3s ease;
 }
 
 .recipe-preview .recipe-footer {
   width: 100%;
-  height: 50%;
+  padding: 10px; /* Reduced padding for a more compact look */
+  background-color: #f9f9f9;
   overflow: hidden;
 }
 
 .recipe-preview .recipe-footer .recipe-title {
-  padding: 10px 10px;
+  padding: 5px 0;
   width: 100%;
-  font-size: 12pt;
+  font-size: 14px; /* Smaller font size */
+  font-weight: bold;
   text-align: left;
   white-space: nowrap;
   overflow: hidden;
-  -o-text-overflow: ellipsis;
   text-overflow: ellipsis;
+  color: #3498db;
 }
 
 .recipe-preview .recipe-footer ul.recipe-overview {
-  padding: 5px 10px;
-  width: 100%;
-  display: -webkit-box;
-  display: -moz-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
+  padding: 5px 0;
   display: flex;
-  -webkit-box-flex: 1;
-  -moz-box-flex: 1;
-  -o-box-flex: 1;
-  box-flex: 1;
-  -webkit-flex: 1 auto;
-  -ms-flex: 1 auto;
-  flex: 1 auto;
-  table-layout: fixed;
-  margin-bottom: 0px;
+  justify-content: space-between; /* Space between time and likes */
+  list-style: none;
+  margin: 0;
+  font-size: 12px; /* Smaller font size */
+  color: #666;
 }
 
 .recipe-preview .recipe-footer ul.recipe-overview li {
-  -webkit-box-flex: 1;
-  -moz-box-flex: 1;
-  -o-box-flex: 1;
-  -ms-box-flex: 1;
-  box-flex: 1;
-  -webkit-flex-grow: 1;
-  flex-grow: 1;
-  width: 90px;
-  display: table-cell;
   text-align: center;
+  color: #666;
+}
+
+.recipe-preview .recipe-footer ul.recipe-overview li:hover {
+  color: #333;
 }
 </style>
