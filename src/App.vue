@@ -35,15 +35,64 @@
       </b-collapse>
     </b-navbar>
 
-    <!-- Modal for creating a new recipe - only shows when triggered -->
+    <!-- Modal for creating a new recipe -->
     <b-modal id="create-recipe-modal" title="Create New Recipe" hide-footer>
       <template #default>
-        <p class="my-4">This is where your recipe creation form will go.</p>
+        <div class="mb-3">
+          <label>Recipe Name:</label>
+          <b-form-input v-model="recipe.name" placeholder="Enter recipe name"></b-form-input>
+        </div>
+
+        <!-- Ingredients Section -->
+        <div class="mb-3">
+          <label>Ingredients and Quantity:</label>
+          <div v-for="(ingredient, index) in recipe.ingredients" :key="index" class="d-flex mb-2">
+            <b-form-input
+              v-model="ingredient.name"
+              placeholder="Ingredient Name"
+              class="mr-2"
+            ></b-form-input>
+            <b-form-input
+              v-model="ingredient.quantity"
+              placeholder="Quantity"
+              class="mr-2"
+            ></b-form-input>
+            <b-button variant="danger" @click="removeIngredient(index)">Remove</b-button>
+          </div>
+          <b-button variant="success" @click="addIngredient">Add Ingredient</b-button>
+        </div>
+
+<!-- Preparation Instructions -->
+        <div class="mb-3">
+          <label for="instructions">Preparation Instructions:</label>
+          <b-form-input
+            id="instructions"
+            v-model="recipe.instructions"
+            placeholder="Enter preparation instructions"
+            rows="1"
+            max-rows="5"
+            class="w-100"
+            style="min-height: 30px;" 
+          ></b-form-input>
+        </div>
+
+        <!-- Number of Portions -->
+        <div class="mb-3">
+          <label>Number of Portions:</label>
+          <b-form-input
+            type="number"
+            v-model="recipe.portions"
+            placeholder="Enter number of portions"
+          ></b-form-input>
+        </div>
+
+        <!-- Save and Cancel Buttons -->
         <b-button variant="primary" @click="saveRecipe">Save Recipe</b-button>
         <b-button variant="danger" @click="closeModal">Cancel</b-button>
       </template>
     </b-modal>
 
+    <!-- Router View -->
     <router-view />
   </div>
 </template>
@@ -51,10 +100,19 @@
 <script>
 export default {
   name: "App",
+  data() {
+    return {
+      recipe: {
+        name: '',
+        ingredients: [{ name: '', quantity: '' }],
+        instructions: '',
+        portions: 1,
+      },
+    };
+  },
   methods: {
     // Method to show the modal when "Create New Recipe" is clicked
     CreateNewRecipe() {
-      console.log('CreateNewRecipe triggered');
       this.$bvModal.show('create-recipe-modal');
     },
 
@@ -65,21 +123,38 @@ export default {
 
     // Method to handle saving the recipe (can be expanded as needed)
     saveRecipe() {
-      // Add your save logic here
-      console.log('Recipe saved');
+      // Implement save logic, such as saving to a server or database
+      console.log('Recipe saved:', this.recipe);
       this.closeModal();
+      // Reset form after saving
+      this.resetForm();
+    },
+    // Reset the form to initial state
+    resetForm() {
+      this.recipe = {
+        name: '',
+        ingredients: [{ name: '', quantity: '' }],
+        instructions: '',
+        portions: 1,
+      }
+    },
+    // Method to add a new ingredient input set
+    addIngredient() {
+      this.recipe.ingredients.push({ name: '', quantity: '' });
+    },
+
+    // Method to remove an ingredient input set
+    removeIngredient(index) {
+      this.recipe.ingredients.splice(index, 1);
     },
 
     // Method to handle user logout
     Logout() {
-      // Assuming you have a logout function defined in your global store
       this.$root.store.logout();
-      // Display a toast notification for successful logout
       this.$root.toast("Logout", "User logged out successfully", "success");
 
-      // Redirect to the home page after logout
       this.$router.push("/").catch(() => {
-        this.$forceUpdate(); // Force update to handle routing errors gracefully
+        this.$forceUpdate();
       });
     },
   },
@@ -166,5 +241,17 @@ b-nav-item:hover {
 
 b-nav-item:active {
   background-color: rgba(0, 0, 0, 0.1);
+}
+
+</style>
+
+<style scoped>
+.d-flex {
+  display: flex;
+  gap: 8px;
+}
+
+.mb-3 {
+  margin-bottom: 1rem;
 }
 </style>
