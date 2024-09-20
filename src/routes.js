@@ -8,7 +8,6 @@ import Router from 'vue-router';
 import Main from "./pages/MainPage";
 import NotFound from "./pages/NotFoundPage";
 import AboutPage from './pages/AboutPage.vue';
-import CreateRecipePage from './pages/CreateRecipePage.vue';
 import FavoriteRecipePage from './pages/FavoriteRecipePage.vue';
 import UserRecipesPage from './pages/UserRecipesPage.vue';
 import FamilyRecipesPage from './pages/FamilyRecipesPage.vue';
@@ -70,11 +69,7 @@ component: UserRecipesPage,
     name: "notFound",
     component: NotFound,
   },
-  {
-    path: "/createrecipe",
-    name: "CreateRecipePage",
-    component: CreateRecipePage,
-  },
+
 
 ];
 

@@ -1,49 +1,49 @@
 <template>
   <div id="app">
     <b-navbar toggleable="lg" type="dark" variant="info">
-      <b-navbar-brand :to="{ name: 'main' }">🍴 My Recipes </b-navbar-brand>
+      <b-navbar-brand :to="{ name: 'main' }">🍴 My Recipes</b-navbar-brand>
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
-
-        <b-nav-item :to="{ name: 'search' }">Search</b-nav-item>
-        <b-nav-item :to="{ name: 'about' }">About</b-nav-item>
-
+          <b-nav-item :to="{ name: 'search' }">Search</b-nav-item>
+          <b-nav-item :to="{ name: 'about' }">About</b-nav-item>
         </b-navbar-nav>
-
 
         <!-- Guest section -->
-
         <b-navbar-nav class="ml-auto" v-if="!$root.store.username">
           <div class="d-flex align-items-center">
-          <span class="guest-text">👋 Hello, Guest</span>
-
-          <b-nav-item :to="{ name: 'login' }">Login</b-nav-item>
-          <b-nav-item :to="{ name: 'register' }">Register</b-nav-item>
-        </div>
-
+            <span class="guest-text">👋 Hello, Guest</span>
+            <b-nav-item :to="{ name: 'login' }">Login</b-nav-item>
+            <b-nav-item :to="{ name: 'register' }">Register</b-nav-item>
+          </div>
         </b-navbar-nav>
+
+        <!-- Logged-in user section -->
         <b-navbar-nav class="ml-auto" v-else>
-        <b-nav-item-dropdown right>
-          <template #button-content>
-        <!-- log in user section -->
+          <b-nav-item-dropdown right>
+            <template #button-content>
+              <span>👋 Hello {{$root.store.username}}</span>
+            </template>
+            <b-dropdown-item :to="{ name: 'FavoriteRecipe' }">My Favorite Recipes</b-dropdown-item>
+            <b-dropdown-item :to="{ name: 'userrecipes' }">My Recipes</b-dropdown-item>
+            <b-dropdown-item :to="{ name: 'family' }">My Family Recipes</b-dropdown-item>
+          </b-nav-item-dropdown>
 
-      </template>
-
-          <b-dropdown-item :to="{name:'FavoriteRecipe'}">My Favorite recpies</b-dropdown-item>
-          <b-dropdown-item :to="{name:'userrecipes'}">My Recpies</b-dropdown-item>
-          <b-dropdown-item :to="{name:'family'}">My Family recpies</b-dropdown-item>
-
-        </b-nav-item-dropdown>
-        <div class="d-flex align-items-center">
-          <span class="guest-text">👋 Hello {{$root.store.username}}  </span>
-        </div>
-
-        <b-nav-item :to="{ name: 'CreateRecipePage' }">Create New Recpie</b-nav-item>
-        <b-nav-item @click="Logout">Logout</b-nav-item>
-
+          <!-- Button to open the modal -->
+          <b-nav-item @click="CreateNewRecipe">Create New Recipe</b-nav-item>
+          <b-nav-item @click="Logout">Logout</b-nav-item>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
+
+    <!-- Modal for creating a new recipe - only shows when triggered -->
+    <b-modal id="create-recipe-modal" title="Create New Recipe" hide-footer>
+      <template #default>
+        <p class="my-4">This is where your recipe creation form will go.</p>
+        <b-button variant="primary" @click="saveRecipe">Save Recipe</b-button>
+        <b-button variant="danger" @click="closeModal">Cancel</b-button>
+      </template>
+    </b-modal>
+
     <router-view />
   </div>
 </template>
@@ -52,16 +52,37 @@
 export default {
   name: "App",
   methods: {
+    // Method to show the modal when "Create New Recipe" is clicked
+    CreateNewRecipe() {
+      console.log('CreateNewRecipe triggered');
+      this.$bvModal.show('create-recipe-modal');
+    },
+
+    // Method to handle closing the modal
+    closeModal() {
+      this.$bvModal.hide('create-recipe-modal');
+    },
+
+    // Method to handle saving the recipe (can be expanded as needed)
+    saveRecipe() {
+      // Add your save logic here
+      console.log('Recipe saved');
+      this.closeModal();
+    },
+
+    // Method to handle user logout
     Logout() {
+      // Assuming you have a logout function defined in your global store
       this.$root.store.logout();
+      // Display a toast notification for successful logout
       this.$root.toast("Logout", "User logged out successfully", "success");
 
+      // Redirect to the home page after logout
       this.$router.push("/").catch(() => {
-        this.$forceUpdate();
+        this.$forceUpdate(); // Force update to handle routing errors gracefully
       });
-    }
-
-  }
+    },
+  },
 };
 </script>
 
