@@ -1,12 +1,52 @@
-{
-    "id": 716429,
-    "image": "https://img.spoonacular.com/recipes/716429-556x370.jpg",
-    "title": "Pasta with Garlic, Scallions, Cauliflower & Breadcrumbs",
-    "readyInMinutes": 45,
-    "aggregateLikes": 209,
-    "vegetarian": false,
-    "vegan": false,
-    "glutenFree": false,
-    "summary": "You can never have too many main course recipes, so give Pasta with Garlic, Scallions, Cauliflower & Breadcrumbs a try. One serving contains <b>543 calories</b>, <b>17g of protein</b>, and <b>16g of fat</b>. For <b>$1.57 per serving</b>, this recipe <b>covers 22%</b> of your daily requirements of vitamins and minerals. This recipe serves 2. A mixture of butter, white wine, pasta, and a handful of other ingredients are all it takes to make this recipe so yummy. 209 people have tried and liked this recipe. It is brought to you by fullbellysisters.blogspot.com. From preparation to the plate, this recipe takes approximately <b>45 minutes</b>. Taking all factors into account, this recipe <b>earns a spoonacular score of 83%</b>, which is tremendous. If you like this recipe, take a look at these similar recipes: <a href=\"https://spoonacular.com/recipes/pasta-with-garlic-scallions-cauliflower-breadcrumbs-1230187\">Pasta with Garlic, Scallions, Cauliflower & Breadcrumbs</a>, <a href=\"https://spoonacular.com/recipes/pasta-with-garlic-scallions-cauliflower-breadcrumbs-1229807\">Pasta with Garlic, Scallions, Cauliflower & Breadcrumbs</a>, and <a href=\"https://spoonacular.com/recipes/pasta-with-garlic-scallions-cauliflower-breadcrumbs-1229669\">Pasta with Garlic, Scallions, Cauliflower & Breadcrumbs</a>."
-
-}
+[
+    {
+        "id": 716429,
+        "image": "https://img.spoonacular.com/recipes/716429-556x370.jpg",
+        "title": "Pasta with Garlic, Scallions, Cauliflower & Breadcrumbs",
+        "readyInMinutes": 45,
+        "aggregateLikes": 209,
+        "vegetarian": false,
+        "vegan": false,
+        "glutenFree": false
+    },
+    {
+        "id": 716381,
+        "image": "https://img.spoonacular.com/recipes/716381-556x370.jpg",
+        "title": "Spicy Shrimp with Cauliflower Mash",
+        "readyInMinutes": 35,
+        "aggregateLikes": 317,
+        "vegetarian": false,
+        "vegan": false,
+        "glutenFree": true
+    },
+    {
+        "id": 715594,
+        "image": "https://img.spoonacular.com/recipes/715594-556x370.jpg",
+        "title": "Chicken with Garlic Parmesan Quinoa",
+        "readyInMinutes": 50,
+        "aggregateLikes": 502,
+        "vegetarian": false,
+        "vegan": false,
+        "glutenFree": true
+    },
+    {
+        "id": 658509,
+        "image": "https://img.spoonacular.com/recipes/658509-556x370.jpg",
+        "title": "Baked Salmon with Roasted Vegetables",
+        "readyInMinutes": 40,
+        "aggregateLikes": 284,
+        "vegetarian": false,
+        "vegan": false,
+        "glutenFree": true
+    },
+    {
+        "id": 716408,
+        "image": "https://img.spoonacular.com/recipes/716408-556x370.jpg",
+        "title": "Vegetarian Black Bean Tacos",
+        "readyInMinutes": 25,
+        "aggregateLikes": 391,
+        "vegetarian": true,
+        "vegan": true,
+        "glutenFree": true
+    }
+]
