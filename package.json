@@ -32,5 +32,9 @@
     "prettier": "^1.19.1",
     "sass-loader": "^8.0.2",
     "vue-template-compiler": "^2.6.11"
-  }
+  },
+  "description": "This table outlines the components in the project, their purpose, and their current status.",
+  "main": ".eslintrc.js",
+  "author": "",
+  "license": "ISC"
 }
