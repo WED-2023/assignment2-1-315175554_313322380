@@ -38,7 +38,6 @@
           <span class="guest-text">👋 Hello {{$root.store.username}}  </span>
         </div>
 
-        <b-nav-item :to="{ name: 'CreateRecipePage' }">Create New Recpie</b-nav-item>
         <b-nav-item @click="Logout">Logout</b-nav-item>
 
         </b-navbar-nav>
