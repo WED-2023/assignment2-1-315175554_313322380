@@ -11,6 +11,7 @@ import AboutPage from './pages/AboutPage.vue';
 import FavoriteRecipePage from './pages/FavoriteRecipePage.vue';
 import UserRecipesPage from './pages/UserRecipesPage.vue';
 import FamilyRecipesPage from './pages/FamilyRecipesPage.vue';
+import RecipeViewPage from './pages/RecipeViewPage.vue';
 // Tell Vue to use Vue Router
 Vue.use(Router);
 
@@ -60,9 +61,9 @@ component: UserRecipesPage,
   component: FamilyRecipesPage,
   },
   {
-    path: "   ",
+    path: '/recipe/:recipeId',  // The route path with dynamic `recipeId` parameter
     name: "recipe",
-    component: () => import("./pages/RecipeViewPage"),
+    component: RecipeViewPage   // Component to display the full recipe
   },
   {
     path: "*",

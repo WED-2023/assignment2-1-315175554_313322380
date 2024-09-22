@@ -4,14 +4,15 @@
       {{ title }}:
       <slot></slot>
     </h3>
-        <!-- Refresh button to get new random recipes -->
-    <b-button @click="updateRecipes" variant="primary" class="mb-3">Refresh Recipes</b-button>
 
     <b-row>
       <b-col v-for="r in recipes" :key="r.id"> 
         <RecipePreview class="recipePreview" :recipe="r" />
       </b-col>
     </b-row>
+            <!-- Refresh button to get new random recipes -->
+            <b-button @click="updateRecipes" variant="primary" class="mb-3">Refresh Recipes</b-button>
+
   </b-container>
 </template>
 
