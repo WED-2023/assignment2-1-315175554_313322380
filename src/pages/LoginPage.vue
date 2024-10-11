@@ -19,6 +19,11 @@
         </b-form-invalid-feedback>
       </b-form-group>
 
+
+
+
+      <!-- password Field -->
+
       <b-form-group
         id="input-group-Password"
         label-cols-sm="3"
@@ -65,7 +70,10 @@
 
 <script>
 import { required } from "vuelidate/lib/validators";
-import {mockLogin} from "../services/auth.js"
+//import {mockLogin} from "../services/auth.js"
+import axios from 'axios'; // Add this to import axios
+
+
 export default {
   name: "Login",
   data() {
@@ -73,10 +81,11 @@ export default {
       form: {
         username: "",
         password: "",
-        submitError: undefined
+        submitError: undefined  // This will store any error message
       }
     };
   },
+
   validations: {
     form: {
       username: {
@@ -93,31 +102,26 @@ export default {
       return $dirty ? !$error : null;
     },
     async Login() {
-      try {
+    try {
+      // Make the POST request using axios
+      const response = await axios.post('http://localhost:3000/auth/Login', {
+        username: this.form.username,  // Pass the username from the form data
+        password: this.form.password   // Pass the password from the form data
+      });
+
+      // If successful, log the response and redirect
+      console.log('Response data:', response.data);
+      this.$root.loggedIn = true;
+      this.$root.store.login(this.form.username); // Save the username in local storage
+      this.$router.push("/"); // Redirect to homepage
+    } catch (err) {
+      console.log(err.response);
+      this.form.submitError = err.response ? err.response.data.message : 'An error occurred';
+    }
+  },
+          
         
-        // const response = await this.axios.post(
-        //   this.$root.store.server_domain +"/Login",
 
-
-        //   {
-        //     username: this.form.username,
-        //     password: this.form.password
-        //   }
-        // );
-
-        const success = true; // modify this to test the error handling
-        const response = mockLogin(this.form.username, this.form.password, success);
-
-        // console.log(response);
-        // this.$root.loggedIn = true;
-        console.log(this.$root.store.login); //with $root--use something in main.js
-        this.$root.store.login(this.form.username);//save the username in localstorage
-        this.$router.push("/");
-      } catch (err) {
-        console.log(err.response);
-        this.form.submitError = err.response.data.message;
-      }
-    },
 
     onLogin() {
       // console.log("login method called");
