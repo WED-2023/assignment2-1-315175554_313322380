@@ -19,7 +19,6 @@
 
         <!-- Logged-in user section -->
         <b-navbar-nav class="ml-auto" v-else>
-<<<<<<< HEAD
         <b-nav-item-dropdown right>
           <template #button-content>
         <!-- log in user section -->
@@ -36,16 +35,6 @@
         </div>
 
         <b-nav-item @click="Logout">Logout</b-nav-item>
-=======
-          <b-nav-item-dropdown right>
-            <template #button-content>
-              <span>👋 Hello {{$root.store.username}}</span>
-            </template>
-            <b-dropdown-item :to="{ name: 'FavoriteRecipe' }">My Favorite Recipes</b-dropdown-item>
-            <b-dropdown-item :to="{ name: 'userrecipes' }">My Recipes</b-dropdown-item>
-            <b-dropdown-item :to="{ name: 'family' }">My Family Recipes</b-dropdown-item>
-          </b-nav-item-dropdown>
->>>>>>> 90cc0ee593a0103cbd5291cee6c9ff6b65110814
 
           <!-- Button to open the modal -->
           <b-nav-item @click="CreateNewRecipe">Create New Recipe</b-nav-item>

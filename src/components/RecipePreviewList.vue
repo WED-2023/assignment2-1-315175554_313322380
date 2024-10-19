@@ -6,19 +6,18 @@
     </h3>
 
     <b-row>
-      <b-col v-for="r in recipes" :key="r.id"> 
+      <b-col v-for="r in recipes" :key="r.id">
         <RecipePreview class="recipePreview" :recipe="r" />
       </b-col>
     </b-row>
-            <!-- Refresh button to get new random recipes -->
-            <b-button @click="updateRecipes" variant="primary" class="mb-3">Refresh Recipes</b-button>
 
+    <!-- Refresh button to get new random recipes -->
+    <b-button @click="updateRecipes" variant="primary" class="mb-3">Refresh Recipes</b-button>
   </b-container>
 </template>
 
 <script>
 import RecipePreview from "./RecipePreview.vue";
-import { mockGetRecipesPreview } from "../services/recipes.js";
 export default {
   name: "RecipePreviewList",
   components: {
@@ -28,11 +27,15 @@ export default {
     title: {
       type: String,
       required: true
+    },
+    amountToShow: {
+      type: Number,
+      default: 3
     }
   },
   data() {
     return {
-      recipes: [] //array of recepies
+      recipes: [] // array of recipes
     };
   },
   mounted() {
@@ -41,19 +44,21 @@ export default {
   methods: {
     async updateRecipes() {
       try {
-        // const response = await this.axios.get(
-        //   this.$root.store.server_domain + "/recipes/random",
-        // );
+        // Make the API request to fetch random recipes
+        const response = await this.axios.get(
+          'http://localhost:3000/recipes/recipe/random',
+          {
+            params: {
+              number: this.amountToShow // Request 'amountToShow' random recipes
+            }
+          }
+        );
 
-        const amountToFetch = 3; // Set this to how many recipes you want to fetch
-        const response = mockGetRecipesPreview(amountToFetch);
-        console.log(response);
-        const recipes = response.data.recipes;
-        console.log(recipes);
-        this.recipes = [];
-        this.recipes.push(...recipes);
+        // Assign the fetched recipes to the local array
+        this.recipes = response.data.recipes;
+        console.log(this.recipes); // Log the recipes to verify the updated list
       } catch (error) {
-        console.log(error);
+        console.error("Error fetching random recipes:", error);
       }
     }
   }
