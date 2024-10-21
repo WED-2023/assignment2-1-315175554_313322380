@@ -8,7 +8,7 @@
         <b-form-input
           v-model="query"
           placeholder="Search for a recipe..."
-          class="mr-2"
+          class="mr-2 search-input"
           style="width: 300px"
           @input="fetchAutocompleteSuggestions"
           list="autocomplete-options"
@@ -16,7 +16,7 @@
         <datalist id="autocomplete-options">
           <option v-for="suggestion in suggestions" :key="suggestion">{{ suggestion }}</option>
         </datalist>
-        <b-button :disabled="loading" type="submit" variant="primary">
+        <b-button :disabled="loading || !query" type="submit" variant="primary">
           <span v-if="loading">
             <b-spinner small></b-spinner> Searching...
           </span>
@@ -55,7 +55,7 @@
 
     <!-- Search Results -->
     <RecipePreviewList
-      v-if="!loading && recipes.length > 0"
+      v-if="!loading && recipes.length > 0 && query"
       title="Search Results"
       :recipes="recipes"
     />
@@ -94,7 +94,7 @@ export default {
   },
   methods: {
     async searchRecipes() {
-      if (!this.query) return;
+      if (!this.query) return;  // Ensure query is present before searching
 
       this.loading = true;
       this.error = null;
@@ -102,7 +102,7 @@ export default {
       try {
         const response = await axios.get(this.$root.store.server_domain + "/recipes/search", {
           params: {
-            recipeName: this.query,
+            recipeName: this.query, // Send the query to search by recipe name
             cuisine: this.selectedCuisine,
             diet: this.selectedDiet,
             intolerance: this.selectedIntolerance,
@@ -110,8 +110,14 @@ export default {
           }
         });
 
-        this.recipes = response.data;
-        localStorage.setItem("lastSearch", JSON.stringify(this.recipes));
+        // Ensure that the response includes only the recipes with names that match the query
+        this.recipes = response.data.filter(recipe =>
+          recipe.name.toLowerCase().includes(this.query.toLowerCase())
+        );
+
+        if (this.recipes.length === 0) {
+          this.error = `No recipes found for "${this.query}".`;
+        }
       } catch (error) {
         console.error("Error searching recipes:", error);
         this.error = "Error fetching search results.";
@@ -136,12 +142,6 @@ export default {
       this.selectedDiet = null;
       this.selectedIntolerance = null;
     }
-  },
-  mounted() {
-    const lastSearch = localStorage.getItem("lastSearch");
-    if (lastSearch) {
-      this.recipes = JSON.parse(lastSearch);
-    }
   }
 };
 </script>
@@ -159,6 +159,13 @@ export default {
 
 .filters {
   margin-top: 1rem;
+}
+
+.search-input {
+  font-size: 1.1rem;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
 }
 
 .loading-message {

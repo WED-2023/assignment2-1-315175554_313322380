@@ -2,7 +2,7 @@
   <router-link
     :to="{ name: 'recipe', params: { recipeId: recipe.id } }"
     class="recipe-preview"
-    @click="handleClick" <!-- Emit the click event -->
+    @click="handleClick"
   >
     <div class="recipe-body">
       <img :src="recipe.image" alt="Recipe image" class="recipe-image" />

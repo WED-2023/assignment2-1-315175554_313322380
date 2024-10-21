@@ -2,28 +2,37 @@
   <div class="container">
     <h1 class="title">Main Page</h1>
 
-    <!-- Random Recipes -->
-    <RecipePreviewList title="Random Recipes" class="RandomRecipes center" />
+    <!-- Random Recipes - Always visible -->
+    <RecipePreviewList 
+      title="Random Recipes" 
+      :recipes="randomRecipes" 
+      class="RandomRecipes center" 
+    />
 
-    <router-link v-if="!isLoggedIn" to="/login" tag="button">
+    <!-- Login prompt for non-logged in users -->
+    <router-link v-if="!isLoggedIn" to="/login" tag="button" class="btn btn-primary">
       You need to log in to view this
     </router-link>
 
-    <!-- Last Reviewed Recipes (only for logged-in users) -->
-    <div v-if="isLoggedIn">
+    <!-- Last Reviewed Recipes (for logged-in users) -->
+    <div v-if="isLoggedIn && lastReviewedRecipes.length > 0">
       <RecipePreviewList 
         title="Last Reviewed Recipes" 
-        :lastReviewedRecipes="lastReviewedRecipes" 
+        :recipes="lastReviewedRecipes" 
         class="RandomRecipes center" 
       />
     </div>
 
-    <div style="position: absolute; top: 70%; left: 50%; transform: translate(-50%, -50%);"></div> 
+    <!-- Message if no last reviewed recipes are available -->
+    <div v-else-if="isLoggedIn">
+      <p>No last reviewed recipes available.</p>
+    </div>
   </div>
 </template>
 
 <script>
 import RecipePreviewList from "../components/RecipePreviewList";
+import axios from 'axios'; // Ensure axios is imported to make API calls
 
 export default {
   components: {
@@ -31,18 +40,32 @@ export default {
   },
   data() {
     return {
-      lastReviewedRecipes: [] // Fetch the last reviewed recipes for logged-in users
+      randomRecipes: [], // Will hold random recipes fetched from backend
+      lastReviewedRecipes: [] // Will hold last reviewed recipes loaded from localStorage
     };
   },
   computed: {
     isLoggedIn() {
-      return !!this.$root.store.username; // Checks if the user is logged in
+      return !!this.$root.store.username; // Check if the user is logged in
+    }
+  },
+  methods: {
+    async fetchRandomRecipes() {
+      try {
+        const response = await axios.get(`${this.$root.store.server_domain}/recipes/recipe/random`);
+        this.randomRecipes = response.data; // Store the random recipes in the state
+      } catch (error) {
+        console.error('Error fetching random recipes:', error);
+      }
     }
   },
   mounted() {
+    // Fetch random recipes when the component is mounted
+    this.fetchRandomRecipes();
+
     if (this.isLoggedIn) {
-      // Fetch last reviewed recipes for the logged-in user here
-      this.lastReviewedRecipes = this.$root.store.lastReviewedRecipes || []; 
+      // Load last reviewed recipes from localStorage
+      this.lastReviewedRecipes = JSON.parse(localStorage.getItem('lastReviewedRecipes')) || [];
     }
   }
 };

@@ -2,44 +2,42 @@
   <div id="app">
     <b-navbar toggleable="lg" type="dark" variant="info">
       <b-navbar-brand :to="{ name: 'main' }">🍴 My Recipes</b-navbar-brand>
-      <b-collapse id="nav-collapse" is-nav>
-        <b-navbar-nav>
-          <b-nav-item :to="{ name: 'search' }">Search</b-nav-item>
-          <b-nav-item :to="{ name: 'about' }">About</b-nav-item>
-        </b-navbar-nav>
 
-        <!-- Guest section -->
-        <b-navbar-nav class="ml-auto" v-if="!$root.store.username">
-          <div class="d-flex align-items-center">
-            <span class="guest-text">👋 Hello, Guest</span>
-            <b-nav-item :to="{ name: 'login' }">Login</b-nav-item>
-            <b-nav-item :to="{ name: 'register' }">Register</b-nav-item>
-          </div>
-        </b-navbar-nav>
+      <b-collapse id="nav-collapse" is-nav class="w-100"> <!-- Ensure navbar takes full width -->
+        <div class="d-flex justify-content-between w-100"> <!-- Flexbox container to handle alignment -->
+          
+          <!-- Left-aligned navigation -->
+          <b-navbar-nav class="left-section d-flex">
+            <b-nav-item :to="{ name: 'search' }">Search</b-nav-item>
+            <b-nav-item :to="{ name: 'about' }">About</b-nav-item>
+          </b-navbar-nav>
 
-        <!-- Logged-in user section -->
-        <b-navbar-nav class="ml-auto" v-else>
-        <b-nav-item-dropdown right>
-          <template #button-content>
-        <!-- log in user section -->
+          <!-- Right-aligned guest/user-related navigation -->
+          <b-navbar-nav class="right-section d-flex">
+            <!-- Guest section -->
+            <template v-if="!$root.store.username">
+              <div class="d-flex align-items-center">
+                <span class="guest-text mr-2">👋 Hello, Guest</span>
+                <b-nav-item :to="{ name: 'login' }">Login</b-nav-item>
+                <b-nav-item :to="{ name: 'register' }">Register</b-nav-item>
+              </div>
+            </template>
 
-      </template>
-
-          <b-dropdown-item :to="{name:'FavoriteRecipe'}">My Favorite recpies</b-dropdown-item>
-          <b-dropdown-item :to="{name:'userrecipes'}">My Recpies</b-dropdown-item>
-          <b-dropdown-item :to="{name:'family'}">My Family recpies</b-dropdown-item>
-
-        </b-nav-item-dropdown>
-        <div class="d-flex align-items-center">
-          <span class="guest-text">👋 Hello {{$root.store.username}}  </span>
-        </div>
-
-        <b-nav-item @click="Logout">Logout</b-nav-item>
-
-          <!-- Button to open the modal -->
-          <b-nav-item @click="CreateNewRecipe">Create New Recipe</b-nav-item>
-          <b-nav-item @click="Logout">Logout</b-nav-item>
-        </b-navbar-nav>
+            <!-- Logged-in user section -->
+            <template v-else>
+              <b-nav-item-dropdown right>
+                <template #button-content>
+                  🍴 {{$root.store.username}}
+                </template>
+                <b-dropdown-item :to="{ name: 'FavoriteRecipe' }">My Favorite Recipes</b-dropdown-item>
+                <b-dropdown-item :to="{ name: 'userrecipes' }">My Recipes</b-dropdown-item>
+                <b-dropdown-item :to="{ name: 'family' }">My Family Recipes</b-dropdown-item>
+              </b-nav-item-dropdown>
+              <b-nav-item @click="CreateNewRecipe">Create New Recipe</b-nav-item>
+              <b-nav-item @click="Logout">Logout</b-nav-item>
+            </template>
+          </b-navbar-nav>
+        </div> <!-- End of flexbox container -->
       </b-collapse>
     </b-navbar>
 
@@ -70,7 +68,7 @@
           <b-button variant="success" @click="addIngredient">Add Ingredient</b-button>
         </div>
 
-<!-- Preparation Instructions -->
+        <!-- Preparation Instructions -->
         <div class="mb-3">
           <label for="instructions">Preparation Instructions:</label>
           <b-form-input
@@ -172,7 +170,6 @@ export default {
 <style lang="scss">
 @import "@/scss/form-style.scss";
 
-
 #app {
   font-family: 'Merienda', cursive; /* Adding a playful font */
   -webkit-font-smoothing: antialiased;
@@ -250,7 +247,6 @@ b-nav-item:hover {
 b-nav-item:active {
   background-color: rgba(0, 0, 0, 0.1);
 }
-
 </style>
 
 <style scoped>
