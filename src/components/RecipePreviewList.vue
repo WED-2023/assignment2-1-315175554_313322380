@@ -1,72 +1,81 @@
 <template>
   <b-container>
     <h3>
-      {{ title }}:
+      {{ title }}
       <slot></slot>
     </h3>
 
+    <!-- Display Random or Last Reviewed Recipes based on prop -->
     <b-row>
-      <b-col v-for="r in recipes" :key="r.id">
-        <RecipePreview class="recipePreview" :recipe="r" />
+      <b-col v-for="r in displayedRecipes" :key="r.id">
+        <RecipePreview class="recipePreview" :recipe="r" @reviewed="addReviewedRecipe(r)" />
       </b-col>
     </b-row>
 
-    <!-- Refresh button to get new random recipes -->
-    <b-button @click="updateRecipes" variant="primary" class="mb-3">Refresh Recipes</b-button>
+    <b-button v-if="!lastReviewedRecipes" @click="updateRecipes" variant="primary" class="mb-3">Refresh Recipes</b-button>
+
+    <b-alert v-if="errorMessage" variant="danger">{{ errorMessage }}</b-alert>
+    <b-spinner v-if="loading" label="Loading..." />
   </b-container>
 </template>
 
 <script>
 import RecipePreview from "./RecipePreview.vue";
+
 export default {
   name: "RecipePreviewList",
   components: {
     RecipePreview
   },
   props: {
-    title: {
-      type: String,
-      required: true
-    },
-    amountToShow: {
-      type: Number,
-      default: 3
+    title: String, // Accepts the title for different sections
+    lastReviewedRecipes: {
+      type: Array,
+      default: null // If null, it will default to random recipes
     }
   },
   data() {
     return {
-      recipes: [] // array of recipes
+      randomRecipes: [],
+      loading: false,
+      errorMessage: ''
     };
   },
+  computed: {
+    displayedRecipes() {
+      // Show last reviewed recipes if provided, otherwise random recipes
+      return this.lastReviewedRecipes || this.randomRecipes;
+    }
+  },
   mounted() {
-    this.updateRecipes();
+    if (!this.lastReviewedRecipes) {
+      this.updateRecipes();
+    }
   },
   methods: {
     async updateRecipes() {
+      this.loading = true;
+      this.errorMessage = '';
       try {
-        // Make the API request to fetch random recipes
-        const response = await this.axios.get(
-          'http://localhost:3000/recipes/recipe/random',
-          {
-            params: {
-              number: this.amountToShow // Request 'amountToShow' random recipes
-            }
-          }
-        );
-
-        // Assign the fetched recipes to the local array
-        this.recipes = response.data.recipes;
-        console.log(this.recipes); // Log the recipes to verify the updated list
+        const response = await this.axios.get('http://localhost:3000/recipes/recipe/random', {
+          params: { number: 3 } // Get 3 random recipes
+        });
+        this.randomRecipes = response.data; // Store random recipes
       } catch (error) {
-        console.error("Error fetching random recipes:", error);
+        this.errorMessage = "Error fetching random recipes.";
+      } finally {
+        this.loading = false;
       }
+    },
+    addReviewedRecipe(recipe) {
+      this.$emit('reviewed', recipe); // Emit reviewed event upwards
     }
   }
 };
 </script>
 
-<style lang="scss" scoped>
-.container {
-  min-height: 100px;
-}
-</style>
+  <style lang="scss" scoped>
+  .container {
+    min-height: 100px;
+  }
+  </style>

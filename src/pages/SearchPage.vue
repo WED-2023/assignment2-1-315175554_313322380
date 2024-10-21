@@ -1,21 +1,57 @@
 <template>
-  <div class="container">
-    <h1 class="title">Search Recipes</h1>
+  <div class="container py-5">
+    <h1 class="title text-center mb-4">Search Recipes</h1>
 
-    <!-- Search Bar -->
-    <b-form @submit.prevent="searchRecipes" inline>
-      <b-form-input
-        v-model="query"
-        placeholder="Search for a recipe..."
-        class="mr-2"
-        style="width: 300px"
-      />
-      <b-button type="submit" variant="primary">Search</b-button>
+    <!-- Search Bar with Autocomplete -->
+    <b-form @submit.prevent="searchRecipes" class="text-center">
+      <div class="d-flex justify-content-center mb-3">
+        <b-form-input
+          v-model="query"
+          placeholder="Search for a recipe..."
+          class="mr-2"
+          style="width: 300px"
+          @input="fetchAutocompleteSuggestions"
+          list="autocomplete-options"
+        />
+        <datalist id="autocomplete-options">
+          <option v-for="suggestion in suggestions" :key="suggestion">{{ suggestion }}</option>
+        </datalist>
+        <b-button :disabled="loading" type="submit" variant="primary">
+          <span v-if="loading">
+            <b-spinner small></b-spinner> Searching...
+          </span>
+          <span v-else>Search</span>
+        </b-button>
+      </div>
+
+      <!-- Filter Dropdowns -->
+      <div class="filters d-flex justify-content-center mb-4">
+        <b-dropdown id="cuisine-dropdown" text="Cuisine" class="mr-2" variant="secondary">
+          <b-dropdown-item v-for="c in cuisines" :key="c" @click="selectedCuisine = c">{{ c }}</b-dropdown-item>
+        </b-dropdown>
+
+        <b-dropdown id="diet-dropdown" text="Diet" class="mr-2" variant="secondary">
+          <b-dropdown-item v-for="d in diets" :key="d" @click="selectedDiet = d">{{ d }}</b-dropdown-item>
+        </b-dropdown>
+
+        <b-dropdown id="intolerance-dropdown" text="Intolerance" class="mr-2" variant="secondary">
+          <b-dropdown-item v-for="i in intolerances" :key="i" @click="selectedIntolerance = i">{{ i }}</b-dropdown-item>
+        </b-dropdown>
+
+        <b-form-select v-model="numberOfResults" :options="resultsOptions" class="mr-2" size="sm" />
+        <b-button @click="resetFilters" variant="outline-danger" size="sm">Clear Filters</b-button>
+      </div>
     </b-form>
 
     <!-- Loading and Error Handling -->
-    <div v-if="loading" class="loading-message">Searching...</div>
-    <div v-if="error">{{ error }}</div>
+    <div v-if="loading" class="loading-message text-center my-4">
+      <b-spinner small label="Searching..."></b-spinner>
+      <span class="ml-2">Searching...</span>
+    </div>
+
+    <b-alert v-if="error" variant="danger" dismissible>
+      {{ error }}
+    </b-alert>
 
     <!-- Search Results -->
     <RecipePreviewList
@@ -25,7 +61,7 @@
     />
 
     <!-- No Results -->
-    <div v-if="!loading && recipes.length === 0 && query" class="no-results">
+    <div v-if="!loading && recipes.length === 0 && query" class="no-results text-center mt-4">
       No recipes found for "{{ query }}".
     </div>
   </div>
@@ -33,7 +69,7 @@
 
 <script>
 import RecipePreviewList from "../components/RecipePreviewList";
-import { mockSearchRecipes } from "../services/recipes.js"; // Replace with actual search API
+import axios from "axios";
 
 export default {
   components: {
@@ -44,42 +80,94 @@ export default {
       query: "", // User's search query
       recipes: [], // Search results
       loading: false, // Tracks loading state
-      error: null // Error handling
+      error: null, // Error handling
+      suggestions: [], // Autocomplete suggestions
+      selectedCuisine: null, // Cuisine filter
+      selectedDiet: null, // Diet filter
+      selectedIntolerance: null, // Intolerance filter
+      numberOfResults: 5, // Default number of results
+      resultsOptions: [5, 10, 15], // Options for number of results
+      cuisines: ["Italian", "Chinese", "American"], // Available cuisines
+      diets: ["Vegetarian", "Vegan", "Keto"], // Available diets
+      intolerances: ["Gluten", "Dairy", "Peanut"] // Available intolerances
     };
   },
   methods: {
     async searchRecipes() {
-      if (!this.query) return; // Do nothing if the query is empty
+      if (!this.query) return;
 
       this.loading = true;
       this.error = null;
 
       try {
-        // Simulate API call to search for recipes (replace with actual API call)
-        this.recipes = await mockSearchRecipes(this.query);
+        const response = await axios.get(this.$root.store.server_domain + "/recipes/search", {
+          params: {
+            recipeName: this.query,
+            cuisine: this.selectedCuisine,
+            diet: this.selectedDiet,
+            intolerance: this.selectedIntolerance,
+            number: this.numberOfResults
+          }
+        });
+
+        this.recipes = response.data;
+        localStorage.setItem("lastSearch", JSON.stringify(this.recipes));
       } catch (error) {
         console.error("Error searching recipes:", error);
         this.error = "Error fetching search results.";
       } finally {
         this.loading = false;
       }
+    },
+    async fetchAutocompleteSuggestions() {
+      if (this.query.length < 3) return; // Limit autocomplete to queries with 3 or more characters
+
+      try {
+        const response = await axios.get(this.$root.store.server_domain + "/recipes/autocomplete", {
+          params: { query: this.query }
+        });
+        this.suggestions = response.data;
+      } catch (error) {
+        console.error("Error fetching suggestions:", error);
+      }
+    },
+    resetFilters() {
+      this.selectedCuisine = null;
+      this.selectedDiet = null;
+      this.selectedIntolerance = null;
+    }
+  },
+  mounted() {
+    const lastSearch = localStorage.getItem("lastSearch");
+    if (lastSearch) {
+      this.recipes = JSON.parse(lastSearch);
     }
   }
 };
 </script>
 
 <style scoped>
+.container {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.filters {
+  margin-top: 1rem;
+}
+
 .loading-message {
-  text-align: center;
-  margin-top: 20px;
-  font-size: 18px;
+  font-size: 1.25rem;
   color: #555;
 }
 
 .no-results {
-  text-align: center;
-  margin-top: 20px;
-  font-size: 18px;
+  font-size: 1.25rem;
   color: #888;
 }
 </style>

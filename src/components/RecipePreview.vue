@@ -2,6 +2,7 @@
   <router-link
     :to="{ name: 'recipe', params: { recipeId: recipe.id } }"
     class="recipe-preview"
+    @click="handleClick" <!-- Emit the click event -->
   >
     <div class="recipe-body">
       <img :src="recipe.image" alt="Recipe image" class="recipe-image" />
@@ -25,9 +26,15 @@ export default {
       type: Object,
       required: true
     }
+  },
+  methods: {
+    handleClick() {
+      this.$emit('viewed', this.recipe); // Emit the viewed event with recipe data
+    }
   }
 };
 </script>
+
 
 <style scoped>
 .recipe-preview {
@@ -98,4 +105,4 @@ export default {
 .recipe-preview .recipe-overview li:hover {
   color: #333;
 }
-</style>
+</style> 
