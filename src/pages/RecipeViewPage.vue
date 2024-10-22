@@ -42,21 +42,22 @@ export default {
   methods: {
     // Fetch the recipe details from the API
     async fetchRecipe(id) {
-      try {
-        const response = await axios.get(`http://localhost:3000/recipes/${id}`); // API call to your backend
-        this.recipe = response.data; // Store the fetched recipe details
+  try {
+    const response = await axios.get(`http://localhost:3000/recipes/${id}`);
+    this.recipe = response.data;
 
-        // If the recipe contains instructions in analyzedInstructions
-        if (this.recipe.analyzedInstructions && this.recipe.analyzedInstructions.length > 0) {
-          this.recipe.instructions = this.recipe.analyzedInstructions[0].steps; // Use the first set of analyzed instructions
-        } else {
-          this.recipe.instructions = [{ step: "No instructions available" }]; // Default message if no instructions
-        }
-      } catch (error) {
-        console.error("Error fetching recipe details:", error);
-        this.errorMessage = "Failed to load recipe details."; // Set an error message
-      }
-    },
+    // If the recipe contains analyzedInstructions
+    if (this.recipe.instructions && this.recipe.instructions.length > 0) {
+      this.recipe.instructions = this.recipe.instructions;
+    } else {
+      this.recipe.instructions = [{ step: "No instructions available" }];
+    }
+  } catch (error) {
+    console.error("Error fetching recipe details:", error);
+    this.errorMessage = "Failed to load recipe details.";
+  }
+}
+,
   },
 };
 </script>

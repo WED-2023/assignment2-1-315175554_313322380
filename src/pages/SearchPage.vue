@@ -102,71 +102,73 @@ export default {
   },
   methods: {
     async searchRecipes() {
-      if (!this.query) return; // Ensure query is present before searching
+  if (!this.query) return; // Ensure query is present before searching
 
-      this.loading = true;
-      this.error = null;
-      this.recipes = [];
+  this.loading = true;
+  this.error = null;
+  this.recipes = [];
 
-      try {
-        // Logging the API call for debugging
-        console.log("Sending API request with the following params:", {
-          recipeName: this.query,
-          cuisine: this.selectedCuisine,
-          diet: this.selectedDiet,
-          intolerance: this.selectedIntolerance,
-          number: this.numberOfResults
-        });
+  try {
+    // Logging the API call for debugging
+    console.log("Sending API request with the following params:", {
+      titleMatch: this.query, // Use titleMatch for better results
+      cuisine: this.selectedCuisine,
+      diet: this.selectedDiet,
+      intolerance: this.selectedIntolerance,
+      number: this.numberOfResults
+    });
 
-        const response = await axios.get(this.$root.store.server_domain + "/recipes/search", {
-          params: {
-            recipeName: this.query, // Send the query to search by recipe name
-            cuisine: this.selectedCuisine,
-            diet: this.selectedDiet,
-            intolerance: this.selectedIntolerance,
-            number: this.numberOfResults
-          }
-        });
-
-        console.log("API response received:", response.data);
-
-        // Only include recipes where the name contains the query
-        this.recipes = response.data.filter(recipe =>
-          recipe.name.toLowerCase().includes(this.query.toLowerCase())
-        );
-
-        if (this.recipes.length === 0) {
-          this.error = `No recipes found for "${this.query}".`;
-        }
-
-        this.query = ''; // Clear search field after submission
-
-      } catch (error) {
-        console.error("Error searching recipes:", error.response || error.message);
-        this.error = "Error fetching search results. Please check the network or server logs.";
-      } finally {
-        this.loading = false;
+    const response = await axios.get("http://localhost:3000/recipes/search", {
+      params: {
+        titleMatch: this.query, // Send the query as titleMatch
+        cuisine: this.selectedCuisine,
+        diet: this.selectedDiet,
+        intolerance: this.selectedIntolerance,
+        number: this.numberOfResults
       }
-    },
-    async fetchAutocompleteSuggestions() {
-      if (this.query.length < 3) return; // Limit autocomplete to queries with 3 or more characters
+    });
 
-      try {
-        const response = await axios.get(this.$root.store.server_domain + "/recipes/autocomplete", {
-          params: { query: this.query }
-        });
-        this.suggestions = response.data;
-      } catch (error) {
-        console.error("Error fetching suggestions:", error);
-      }
-    },
-    resetFilters() {
-      this.selectedCuisine = null;
-      this.selectedDiet = null;
-      this.selectedIntolerance = null;
+    console.log("API response received:", response.data);
+
+    // Map results directly from the API response
+    this.recipes = response.data.map(recipe => ({
+      id: recipe.id,
+      name: recipe.title, 
+    }));
+
+    if (this.recipes.length === 0) {
+      this.error = `No recipes found for "${this.query}".`;
     }
+
+    this.query = ''; // Clear search field after submission
+
+  } catch (error) {
+    console.error("Error searching recipes:", error.response ? error.response.data : error.message);
+    this.error = "Error fetching search results. Please check the network or server logs.";
+  } finally {
+    this.loading = false;
   }
-};
+}
+,
+//     async fetchAutocompleteSuggestions() {
+//       if (this.query.length < 3) return; // Limit autocomplete to queries with 3 or more characters
+
+//       try {
+//         const response = await axios.get(this.$root.store.server_domain + "/recipes/autocomplete", {
+//           params: { query: this.query }
+//         });
+//         this.suggestions = response.data;
+//       } catch (error) {
+//         console.error("Error fetching suggestions:", error);
+//       }
+//     },
+//     resetFilters() {
+//       this.selectedCuisine = null;
+//       this.selectedDiet = null;
+//       this.selectedIntolerance = null;
+//     }
+   }
+ };
 </script>
 
 <style scoped>
