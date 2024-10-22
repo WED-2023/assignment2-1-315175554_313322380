@@ -26,15 +26,15 @@
 
       <!-- Filter Dropdowns -->
       <div class="filters d-flex justify-content-center mb-4">
-        <b-dropdown id="cuisine-dropdown" text="Cuisine" class="mr-2" variant="secondary">
+        <b-dropdown id="cuisine-dropdown" :text="selectedCuisine || 'Cuisine'" class="mr-2" variant="secondary">
           <b-dropdown-item v-for="c in cuisines" :key="c" @click="selectedCuisine = c">{{ c }}</b-dropdown-item>
         </b-dropdown>
 
-        <b-dropdown id="diet-dropdown" text="Diet" class="mr-2" variant="secondary">
+        <b-dropdown id="diet-dropdown" :text="selectedDiet || 'Diet'" class="mr-2" variant="secondary">
           <b-dropdown-item v-for="d in diets" :key="d" @click="selectedDiet = d">{{ d }}</b-dropdown-item>
         </b-dropdown>
 
-        <b-dropdown id="intolerance-dropdown" text="Intolerance" class="mr-2" variant="secondary">
+        <b-dropdown id="intolerance-dropdown" :text="selectedIntolerance || 'Intolerance'" class="mr-2" variant="secondary">
           <b-dropdown-item v-for="i in intolerances" :key="i" @click="selectedIntolerance = i">{{ i }}</b-dropdown-item>
         </b-dropdown>
 
@@ -42,6 +42,15 @@
         <b-button @click="resetFilters" variant="outline-danger" size="sm">Clear Filters</b-button>
       </div>
     </b-form>
+
+    <!-- Display Filter Summary if Filters Applied -->
+    <div v-if="selectedCuisine || selectedDiet || selectedIntolerance" class="filter-summary text-center mb-4">
+      <p>Showing results with 
+        <strong v-if="selectedCuisine">Cuisine: {{ selectedCuisine }}</strong> 
+        <strong v-if="selectedDiet">, Diet: {{ selectedDiet }}</strong> 
+        <strong v-if="selectedIntolerance">, Intolerance: {{ selectedIntolerance }}</strong>.
+      </p>
+    </div>
 
     <!-- Loading and Error Handling -->
     <div v-if="loading" class="loading-message text-center my-4">
@@ -54,11 +63,10 @@
     </b-alert>
 
     <!-- Search Results -->
-    <RecipePreviewList
-      v-if="!loading && recipes.length > 0 && query"
-      title="Search Results"
-      :recipes="recipes"
-    />
+    <div v-if="!loading && recipes.length > 0" class="result-info text-center">
+      <p>{{ recipes.length }} results found for "{{ query }}".</p>
+      <RecipePreviewList :recipes="recipes" />
+    </div>
 
     <!-- No Results -->
     <div v-if="!loading && recipes.length === 0 && query" class="no-results text-center mt-4">
@@ -94,12 +102,22 @@ export default {
   },
   methods: {
     async searchRecipes() {
-      if (!this.query) return;  // Ensure query is present before searching
+      if (!this.query) return; // Ensure query is present before searching
 
       this.loading = true;
       this.error = null;
+      this.recipes = [];
 
       try {
+        // Logging the API call for debugging
+        console.log("Sending API request with the following params:", {
+          recipeName: this.query,
+          cuisine: this.selectedCuisine,
+          diet: this.selectedDiet,
+          intolerance: this.selectedIntolerance,
+          number: this.numberOfResults
+        });
+
         const response = await axios.get(this.$root.store.server_domain + "/recipes/search", {
           params: {
             recipeName: this.query, // Send the query to search by recipe name
@@ -110,7 +128,9 @@ export default {
           }
         });
 
-        // Ensure that the response includes only the recipes with names that match the query
+        console.log("API response received:", response.data);
+
+        // Only include recipes where the name contains the query
         this.recipes = response.data.filter(recipe =>
           recipe.name.toLowerCase().includes(this.query.toLowerCase())
         );
@@ -118,9 +138,12 @@ export default {
         if (this.recipes.length === 0) {
           this.error = `No recipes found for "${this.query}".`;
         }
+
+        this.query = ''; // Clear search field after submission
+
       } catch (error) {
-        console.error("Error searching recipes:", error);
-        this.error = "Error fetching search results.";
+        console.error("Error searching recipes:", error.response || error.message);
+        this.error = "Error fetching search results. Please check the network or server logs.";
       } finally {
         this.loading = false;
       }
@@ -176,5 +199,15 @@ export default {
 .no-results {
   font-size: 1.25rem;
   color: #888;
+}
+
+.filter-summary {
+  font-size: 1rem;
+  color: #666;
+}
+
+.result-info {
+  font-size: 1rem;
+  color: #555;
 }
 </style>
