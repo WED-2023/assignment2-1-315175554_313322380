@@ -1,22 +1,29 @@
 <template>
-  <router-link
-    :to="{ name: 'recipe', params: { recipeId: recipe.id } }"
-    class="recipe-preview"
-    @click="handleClick"
-  >
-    <div class="recipe-body">
-      <img :src="recipe.image" alt="Recipe image" class="recipe-image" />
-    </div>
-    <div class="recipe-footer">
-      <div :title="recipe.title" class="recipe-title">
-        {{ recipe.title }}
+  <div class="recipe-preview">
+    <router-link
+      :to="{ name: 'recipe', params: { recipeId: recipe.id } }"
+      class="recipe-body"
+      @click="handleClick"
+    >
+      <div class="recipe-body">
+        <img :src="recipe.image" alt="Recipe image" class="recipe-image" />
       </div>
-      <ul class="recipe-overview">
-        <li>{{ recipe.readyInMinutes }} minutes</li>
-        <li>{{ recipe.aggregateLikes || 0 }} likes</li>
-      </ul>
-    </div>
-  </router-link>
+      <div class="recipe-footer">
+        <div :title="recipe.title" class="recipe-title">
+          {{ recipe.title }}
+        </div>
+        <ul class="recipe-overview">
+          <li>{{ recipe.readyInMinutes }} minutes</li>
+          <li>{{ recipe.aggregateLikes || 0 }} likes</li>
+        </ul>
+      </div>
+    </router-link>
+
+    <!-- Add Favorite Button -->
+    <b-button variant="success" @click.stop="addToFavorites(recipe.id)">
+      Add to Favorites
+    </b-button>
+  </div>
 </template>
 
 <script>
@@ -24,17 +31,19 @@ export default {
   props: {
     recipe: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   methods: {
     handleClick() {
-      this.$emit('viewed', this.recipe); // Emit the viewed event with recipe data
-    }
-  }
+      this.$emit('viewed', this.recipe);
+    },
+    addToFavorites(recipeId) {
+      this.$emit('favorite', recipeId); // Emit event for favorite
+    },
+  },
 };
 </script>
-
 
 <style scoped>
 .recipe-preview {
