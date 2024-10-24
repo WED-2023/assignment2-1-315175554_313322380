@@ -1,134 +1,34 @@
-## Project Components
+# Recipe Explorer - Client
 
-This table outlines the components in the project, their purpose, and their current status.
+This project is the client-side of Recipe Explorer, an interactive web application designed to help users discover, search, and manage their favorite recipes. Built using Vue.js, this application provides an engaging user experience with responsive design and dynamic features.
 
-| **Component Name**       | **Type**      | **Purpose**                                                                                             | **Status**                                                                                                  |
-|--------------------------|---------------|---------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|
-| `App.vue`                 | Layout/Page   | Root component for the application. Handles global layout and navigation bar, including login state.      | **Completed**: Includes authentication-based navigation and dynamic routing.                               |
-| `MainPage.vue`            | Page          | Displays random recipes and last viewed recipes.                                                         | **Completed**: Optimized for user login state; profile and favorites buttons removed.                       |
-| `LoginPage.vue`           | Page          | Handles user login through a form.                                                                       | **Completed**: Login form with validation using Bootstrap.                                                  |
-| `RegisterPage.vue`        | Page          | Handles user registration through a form.                                                                | **Completed**: Registration form with validation using Bootstrap.                                           |
-| `SearchPage.vue`          | Page          | Allows users to search for recipes.                                                                      | **Basic Structure**: Search form is there, needs actual search functionality.                               |
-| `NotFoundPage.vue`        | Page          | Displays a 404 error page when a route is not found.                                                      | **Completed**: Fun design with a creative 404 message.                                                      |
-| `ProfilePage.vue`         | Page          | Displays user profile information and saved data.                                                        | **Not Completed**: Page exists, but user-specific profile functionality is pending.                         |
-| `FavoritesPage.vue`       | Page          | Displays a list of recipes saved as favorites by the user.                                                | **Not Completed**: Page exists, but functionality for displaying favorite recipes needs implementation.     |
-| `RecipePreview.vue`       | Component     | Displays a single recipe preview, including image, title, and quick stats (e.g., likes, time).            | **Completed**: Used in recipe lists across multiple pages.                                                   |
-| `RecipePreviewList.vue`   | Component     | Displays a list of recipes using the `RecipePreview` component.                                           | **Completed**: Used for showing random and last viewed recipes.                                              |
-| `Navbar.vue`              | Component     | Displays the main navigation bar, including links to pages and user status (login/logout/profile/favorites). | **Completed**: Includes Bootstrap icons for profile and favorites; dynamic based on user authentication.    |
-| `RecipeForm.vue`          | Component     | A form component to allow users to submit recipes.                                                        | **Not Completed**: Component structure needed, functionality to add recipes is pending.                     |
-| `ShoppingList.vue`        | Component     | Displays and manages a list of ingredients the user can add to their shopping list.                       | **Not Completed**: Requires structure and logic for adding/removing ingredients from the shopping list.      |
-| `routes.js`               | Configuration | Manages the routing for all pages (e.g., MainPage, LoginPage, ProfilePage).                               | **Completed**: Routing for all pages added, including lazy loading for optimization.                        |
+## Key Features
 
-## Component Status Overview
+- **Mobile-Friendly Design**: Responsive layout using Bootstrap ensures the application works smoothly across various devices and screen sizes.
+- **Dynamic User Interface**: The application offers a seamless experience with real-time updates and interactions powered by Vue.js.
+- **Search and Filter Options**: Users can easily search recipes and apply filters based on cuisine, diet, or intolerances. Sorting by preparation time and popularity is also available.
+- **User Session Management**: The app stores session data, including favorite recipes and user preferences, using Vuex state management.
+- **Custom Recipe Management**: Users can add, edit, and manage their own recipes within the application.
 
-- **Completed Components**:
-  - `App.vue`, `MainPage.vue`, `LoginPage.vue`, `RegisterPage.vue`, `NotFoundPage.vue`, `RecipePreview.vue`, `RecipePreviewList.vue`, `Navbar.vue`, `routes.js`
-  
-- **Not Completed Components**:
-  - `ProfilePage.vue`: Requires development to handle user-specific data.
-  - `FavoritesPage.vue`: Needs to show the list of favorite recipes.
-  - `RecipeForm.vue`: Needs implementation to allow users to submit new recipes.
-  - `ShoppingList.vue`: Needs structure and functionality for managing ingredients.
-  
-- **Basic Structure**:
-  - `SearchPage.vue`: The structure is there but requires the search logic and functionality to be implemented.## Project Components
+## Tech Stack
 
-This table outlines the components in the project, their purpose, and their current status.
+- **Vue.js**: The primary JavaScript framework used to build the client-side of the application.
+- **Bootstrap**: Ensures a consistent and responsive design across all devices.
+- **Axios**: Handles all API requests for retrieving and managing recipe data.
+- **Vue Router**: Manages navigation between pages and components.
+- **Vuex**: Manages state across the app for efficient data flow and session persistence.
 
-| **Component Name**       | **Type**      | **Purpose**                                                                                             | **Status**                                                                                                  |
-|--------------------------|---------------|---------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|
-| `App.vue`                 | Layout/Page   | Root component for the application. Handles global layout and navigation bar, including login state.      | **Completed**: Includes authentication-based navigation and dynamic routing.                               |
-| `MainPage.vue`            | Page          | Displays random recipes and last viewed recipes.                                                         | **Completed**: Optimized for user login state; profile and favorites buttons removed.                       |
-| `LoginPage.vue`           | Page          | Handles user login through a form.                                                                       | **Completed**: Login form with validation using Bootstrap.                                                  |
-| `RegisterPage.vue`        | Page          | Handles user registration through a form.                                                                | **Completed**: Registration form with validation using Bootstrap.                                           |
-| `SearchPage.vue`          | Page          | Allows users to search for recipes.                                                                      | **Basic Structure**: Search form is there, needs actual search functionality.                               |
-| `NotFoundPage.vue`        | Page          | Displays a 404 error page when a route is not found.                                                      | **Completed**: Fun design with a creative 404 message.                                                      |
-| `ProfilePage.vue`         | Page          | Displays user profile information and saved data.                                                        | **Not Completed**: Page exists, but user-specific profile functionality is pending.                         |
-| `FavoritesPage.vue`       | Page          | Displays a list of recipes saved as favorites by the user.                                                | **Not Completed**: Page exists, but functionality for displaying favorite recipes needs implementation.     |
-| `RecipePreview.vue`       | Component     | Displays a single recipe preview, including image, title, and quick stats (e.g., likes, time).            | **Completed**: Used in recipe lists across multiple pages.                                                   |
-| `RecipePreviewList.vue`   | Component     | Displays a list of recipes using the `RecipePreview` component.                                           | **Completed**: Used for showing random and last viewed recipes.                                              |
-| `Navbar.vue`              | Component     | Displays the main navigation bar, including links to pages and user status (login/logout/profile/favorites). | **Completed**: Includes Bootstrap icons for profile and favorites; dynamic based on user authentication.    |
-| `RecipeForm.vue`          | Component     | A form component to allow users to submit recipes.                                                        | **Not Completed**: Component structure needed, functionality to add recipes is pending.                     |
-| `ShoppingList.vue`        | Component     | Displays and manages a list of ingredients the user can add to their shopping list.                       | **Not Completed**: Requires structure and logic for adding/removing ingredients from the shopping list.      |
-| `routes.js`               | Configuration | Manages the routing for all pages (e.g., MainPage, LoginPage, ProfilePage).                               | **Completed**: Routing for all pages added, including lazy loading for optimization.                        |
+## Development Highlights
 
-## Component Status Overview
+- **Modular Architecture**: Components are designed in a modular way, promoting code reuse and maintainability.
+- **API Integration**: Connected with external APIs, such as Spoonacular, to provide up-to-date recipe data.
+- **User Experience Enhancements**: Includes features such as progress indicators during API calls, user-friendly error messages, and notifications for user actions.
+- **Custom Theme**: The website features a clean, custom-designed layout that matches the theme of a recipe management tool.
 
-- **Completed Components**:
-  - `App.vue`, `MainPage.vue`, `LoginPage.vue`, `RegisterPage.vue`, `NotFoundPage.vue`, `RecipePreview.vue`, `RecipePreviewList.vue`, `Navbar.vue`, `routes.js`
-  
-- **Not Completed Components**:
-  - `ProfilePage.vue`: Requires development to handle user-specific data.
-  - `FavoritesPage.vue`: Needs to show the list of favorite recipes.
-  - `RecipeForm.vue`: Needs implementation to allow users to submit new recipes.
-  - `ShoppingList.vue`: Needs structure and functionality for managing ingredients.
-  
-- **Basic Structure**:
-  - `SearchPage.vue`: The structure is there but requires the search logic and functionality to be implemented.
-## Project Components
+## Unique Aspects
 
-This table outlines the components in the project, their purpose, and their current status.
+- **Component Reusability**: The application leverages reusable components, such as recipe previews , to make the codebase more organized and scalable.
+- **User Recipe Management**: Users can create and manage their own recipe collections, allowing for personalized content in addition to external recipe data.
+- **Loading & Error Feedback**: Interactive feedback is provided during data fetches, ensuring the user knows the app is actively processing their requests.
 
-| **Component Name**       | **Type**      | **Purpose**                                                                                             | **Status**                                                                                                  |
-|--------------------------|---------------|---------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|
-| `App.vue`                 | Layout/Page   | Root component for the application. Handles global layout and navigation bar, including login state.      | **Completed**: Includes authentication-based navigation and dynamic routing.                               |
-| `MainPage.vue`            | Page          | Displays random recipes and last viewed recipes.                                                         | **Completed**: Optimized for user login state; profile and favorites buttons removed.                       |
-| `LoginPage.vue`           | Page          | Handles user login through a form.                                                                       | **Completed**: Login form with validation using Bootstrap.                                                  |
-| `RegisterPage.vue`        | Page          | Handles user registration through a form.                                                                | **Completed**: Registration form with validation using Bootstrap.                                           |
-| `SearchPage.vue`          | Page          | Allows users to search for recipes.                                                                      | **Basic Structure**: Search form is there, needs actual search functionality.                               |
-| `NotFoundPage.vue`        | Page          | Displays a 404 error page when a route is not found.                                                      | **Completed**: Fun design with a creative 404 message.                                                      |
-| `ProfilePage.vue`         | Page          | Displays user profile information and saved data.                                                        | **Not Completed**: Page exists, but user-specific profile functionality is pending.                         |
-| `FavoritesPage.vue`       | Page          | Displays a list of recipes saved as favorites by the user.                                                | **Not Completed**: Page exists, but functionality for displaying favorite recipes needs implementation.     |
-| `RecipePreview.vue`       | Component     | Displays a single recipe preview, including image, title, and quick stats (e.g., likes, time).            | **Completed**: Used in recipe lists across multiple pages.                                                   |
-| `RecipePreviewList.vue`   | Component     | Displays a list of recipes using the `RecipePreview` component.                                           | **Completed**: Used for showing random and last viewed recipes.                                              |
-| `Navbar.vue`              | Component     | Displays the main navigation bar, including links to pages and user status (login/logout/profile/favorites). | **Completed**: Includes Bootstrap icons for profile and favorites; dynamic based on user authentication.    |
-| `RecipeForm.vue`          | Component     | A form component to allow users to submit recipes.                                                        | **Not Completed**: Component structure needed, functionality to add recipes is pending.                     |
-| `ShoppingList.vue`        | Component     | Displays and manages a list of ingredients the user can add to their shopping list.                       | **Not Completed**: Requires structure and logic for adding/removing ingredients from the shopping list.      |
-| `routes.js`               | Configuration | Manages the routing for all pages (e.g., MainPage, LoginPage, ProfilePage).                               | **Completed**: Routing for all pages added, including lazy loading for optimization.                        |
-
-## Component Status Overview
-
-- **Completed Components**:
-  - `App.vue`, `MainPage.vue`, `LoginPage.vue`, `RegisterPage.vue`, `NotFoundPage.vue`, `RecipePreview.vue`, `RecipePreviewList.vue`, `Navbar.vue`, `routes.js`
-  
-- **Not Completed Components**:
-  - `ProfilePage.vue`: Requires development to handle user-specific data.
-  - `FavoritesPage.vue`: Needs to show the list of favorite recipes.
-  - `RecipeForm.vue`: Needs implementation to allow users to submit new recipes.
-  - `ShoppingList.vue`: Needs structure and functionality for managing ingredients.
-  
-- **Basic Structure**:
-  - `SearchPage.vue`: The structure is there but requires the search logic and functionality to be implemented.## Project Components
-
-This table outlines the components in the project, their purpose, and their current status.
-
-| **Component Name**       | **Type**      | **Purpose**                                                                                             | **Status**                                                                                                  |
-|--------------------------|---------------|---------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|
-| `App.vue`                 | Layout/Page   | Root component for the application. Handles global layout and navigation bar, including login state.      | **Completed**: Includes authentication-based navigation and dynamic routing.                               |
-| `MainPage.vue`            | Page          | Displays random recipes and last viewed recipes.                                                         | **Completed**: Optimized for user login state; profile and favorites buttons removed.                       |
-| `LoginPage.vue`           | Page          | Handles user login through a form.                                                                       | **Completed**: Login form with validation using Bootstrap.                                                  |
-| `RegisterPage.vue`        | Page          | Handles user registration through a form.                                                                | **Completed**: Registration form with validation using Bootstrap.                                           |
-| `SearchPage.vue`          | Page          | Allows users to search for recipes.                                                                      | **Basic Structure**: Search form is there, needs actual search functionality.                               |
-| `NotFoundPage.vue`        | Page          | Displays a 404 error page when a route is not found.                                                      | **Completed**: Fun design with a creative 404 message.                                                      |
-| `ProfilePage.vue`         | Page          | Displays user profile information and saved data.                                                        | **Not Completed**: Page exists, but user-specific profile functionality is pending.                         |
-| `FavoritesPage.vue`       | Page          | Displays a list of recipes saved as favorites by the user.                                                | **Not Completed**: Page exists, but functionality for displaying favorite recipes needs implementation.     |
-| `RecipePreview.vue`       | Component     | Displays a single recipe preview, including image, title, and quick stats (e.g., likes, time).            | **Completed**: Used in recipe lists across multiple pages.                                                   |
-| `RecipePreviewList.vue`   | Component     | Displays a list of recipes using the `RecipePreview` component.                                           | **Completed**: Used for showing random and last viewed recipes.                                              |
-| `Navbar.vue`              | Component     | Displays the main navigation bar, including links to pages and user status (login/logout/profile/favorites). | **Completed**: Includes Bootstrap icons for profile and favorites; dynamic based on user authentication.    |
-| `RecipeForm.vue`          | Component     | A form component to allow users to submit recipes.                                                        | **Not Completed**: Component structure needed, functionality to add recipes is pending.                     |
-| `ShoppingList.vue`        | Component     | Displays and manages a list of ingredients the user can add to their shopping list.                       | **Not Completed**: Requires structure and logic for adding/removing ingredients from the shopping list.      |
-| `routes.js`               | Configuration | Manages the routing for all pages (e.g., MainPage, LoginPage, ProfilePage).                               | **Completed**: Routing for all pages added, including lazy loading for optimization.                        |
-
-## Component Status Overview
-
-- **Completed Components**:
-  - `App.vue`, `MainPage.vue`, `LoginPage.vue`, `RegisterPage.vue`, `NotFoundPage.vue`, `RecipePreview.vue`, `RecipePreviewList.vue`, `Navbar.vue`, `routes.js`
-  
-- **Not Completed Components**:
-  - `ProfilePage.vue`: Requires development to handle user-specific data.
-  - `FavoritesPage.vue`: Needs to show the list of favorite recipes.
-  - `RecipeForm.vue`: Needs implementation to allow users to submit new recipes.
-  - `ShoppingList.vue`: Needs structure and functionality for managing ingredients.
-  
-- **Basic Structure**:
-  - `SearchPage.vue`: The structure is there but requires the search logic and functionality to be implemented.
+This project provides a comprehensive solution for users looking to discover and manage recipes, whether it be from external sources or their own creations.
