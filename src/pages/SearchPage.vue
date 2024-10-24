@@ -2,7 +2,7 @@
   <div class="container py-5">
     <h1 class="title text-center mb-4">Search Recipes</h1>
 
-    <!-- Search Bar with Autocomplete -->
+    <!-- Search Bar without Autocomplete -->
     <b-form @submit.prevent="searchRecipes" class="text-center">
       <div class="d-flex justify-content-center mb-3">
         <b-form-input
@@ -10,12 +10,7 @@
           placeholder="Search for a recipe..."
           class="mr-2 search-input"
           style="width: 300px"
-          @input="fetchAutocompleteSuggestions"
-          list="autocomplete-options"
         />
-        <datalist id="autocomplete-options">
-          <option v-for="suggestion in suggestions" :key="suggestion">{{ suggestion }}</option>
-        </datalist>
         <b-button :disabled="loading || !query" type="submit" variant="primary">
           <span v-if="loading">
             <b-spinner small></b-spinner> Searching...
@@ -62,11 +57,11 @@
       {{ error }}
     </b-alert>
 
-    <!-- Search Results -->
-    <div v-if="!loading && recipes.length > 0" class="result-info text-center">
-      <p>{{ recipes.length }} results found for "{{ query }}".</p>
-      <RecipePreviewList :recipes="recipes" />
-    </div>
+<!-- Search Results -->
+<div v-if="!loading && recipes.length > 0" class="result-info text-center">
+    <p>{{ recipes.length }} results found for "{{ query }}".</p>
+    <RecipePreviewList :lastReviewedRecipes="recipes" :title="'Search Results'" />
+</div>
 
     <!-- No Results -->
     <div v-if="!loading && recipes.length === 0 && query" class="no-results text-center mt-4">
@@ -89,7 +84,6 @@ export default {
       recipes: [], // Search results
       loading: false, // Tracks loading state
       error: null, // Error handling
-      suggestions: [], // Autocomplete suggestions
       selectedCuisine: null, // Cuisine filter
       selectedDiet: null, // Diet filter
       selectedIntolerance: null, // Intolerance filter
@@ -102,73 +96,57 @@ export default {
   },
   methods: {
     async searchRecipes() {
-  if (!this.query) return; // Ensure query is present before searching
+        if (!this.query) return; 
 
-  this.loading = true;
-  this.error = null;
-  this.recipes = [];
+        this.loading = true;
+        this.error = null;
+        this.recipes = [];
 
-  try {
-    // Logging the API call for debugging
-    console.log("Sending API request with the following params:", {
-      titleMatch: this.query, // Use titleMatch for better results
-      cuisine: this.selectedCuisine,
-      diet: this.selectedDiet,
-      intolerance: this.selectedIntolerance,
-      number: this.numberOfResults
-    });
+        try {
+            const response = await axios.get("http://localhost:3000/recipes/search", {
+                params: {
+                    titleMatch: this.query,
+                    cuisine: this.selectedCuisine,
+                    diet: this.selectedDiet,
+                    intolerance: this.selectedIntolerance,
+                    number: this.numberOfResults
+                }
+            });
+            console.log("Search API response:", response.data);
 
-    const response = await axios.get("http://localhost:3000/recipes/search", {
-      params: {
-        titleMatch: this.query, // Send the query as titleMatch
-        cuisine: this.selectedCuisine,
-        diet: this.selectedDiet,
-        intolerance: this.selectedIntolerance,
-        number: this.numberOfResults
-      }
-    });
+            // Format the recipes similarly to how random recipes are structured
+            this.recipes = response.data.map(recipe => ({
+                id: recipe.id,
+                title: recipe.title,
+                readyInMinutes: recipe.readyInMinutes,
+                image: recipe.image,
+                aggregateLikes: recipe.aggregateLikes,
+                vegan: recipe.vegan,
+                vegetarian: recipe.vegetarian,
+                glutenFree: recipe.glutenFree,
+                instructions: recipe.instructions // Assuming you want to keep this for the full view later
+            }));
 
-    console.log("API response received:", response.data);
+            if (this.recipes.length === 0) {
+                this.error = `No recipes found for "${this.query}".`;
+            }
 
-    // Map results directly from the API response
-    this.recipes = response.data.map(recipe => ({
-      id: recipe.id,
-      name: recipe.title, 
-    }));
+            this.query = ''; // Clear search field after submission
 
-    if (this.recipes.length === 0) {
-      this.error = `No recipes found for "${this.query}".`;
+        } catch (error) {
+            this.error = "Error fetching search results. Please check the network or server logs.";
+        } finally {
+            this.loading = false;
+        }
+    },
+    resetFilters() {
+        this.selectedCuisine = null;
+        this.selectedDiet = null;
+        this.selectedIntolerance = null;
     }
-
-    this.query = ''; // Clear search field after submission
-
-  } catch (error) {
-    console.error("Error searching recipes:", error.response ? error.response.data : error.message);
-    this.error = "Error fetching search results. Please check the network or server logs.";
-  } finally {
-    this.loading = false;
-  }
 }
-,
-//     async fetchAutocompleteSuggestions() {
-//       if (this.query.length < 3) return; // Limit autocomplete to queries with 3 or more characters
 
-//       try {
-//         const response = await axios.get(this.$root.store.server_domain + "/recipes/autocomplete", {
-//           params: { query: this.query }
-//         });
-//         this.suggestions = response.data;
-//       } catch (error) {
-//         console.error("Error fetching suggestions:", error);
-//       }
-//     },
-//     resetFilters() {
-//       this.selectedCuisine = null;
-//       this.selectedDiet = null;
-//       this.selectedIntolerance = null;
-//     }
-   }
- };
+};
 </script>
 
 <style scoped>
