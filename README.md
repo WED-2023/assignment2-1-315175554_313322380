@@ -1,4 +1,4 @@
-# Recipe Explorer - Client
+# Recipe Management  - Client
 
 This project is the client-side of Recipe Explorer, an interactive web application designed to help users discover, search, and manage their favorite recipes. Built using Vue.js, this application provides an engaging user experience with responsive design and dynamic features.
 
