@@ -32,7 +32,7 @@
 
 <script>
 import RecipePreviewList from "../components/RecipePreviewList";
-import axios from 'axios'; // Ensure axios is imported to make API calls
+import axios from 'axios';
 
 export default {
   components: {
@@ -40,31 +40,28 @@ export default {
   },
   data() {
     return {
-      randomRecipes: [], // Will hold random recipes fetched from backend
-      lastReviewedRecipes: [] // Will hold last reviewed recipes loaded from localStorage
+      randomRecipes: [],
+      lastReviewedRecipes: []
     };
   },
   computed: {
     isLoggedIn() {
-      return !!this.$root.store.username; // Check if the user is logged in
+      return !!this.$root.store.username;
     }
   },
   methods: {
     async fetchRandomRecipes() {
       try {
         const response = await axios.get(`${this.$root.store.server_domain}/recipes/recipe/random`);
-        this.randomRecipes = response.data; // Store the random recipes in the state
+        this.randomRecipes = response.data;
       } catch (error) {
         console.error('Error fetching random recipes:', error);
       }
     }
   },
   mounted() {
-    // Fetch random recipes when the component is mounted
     this.fetchRandomRecipes();
-
     if (this.isLoggedIn) {
-      // Load last reviewed recipes from localStorage
       this.lastReviewedRecipes = JSON.parse(localStorage.getItem('lastReviewedRecipes')) || [];
     }
   }

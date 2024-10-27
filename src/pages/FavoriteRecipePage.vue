@@ -1,108 +1,129 @@
 <template>
-    <div class="favorite-page">
-      <h1>Favorite Recipes</h1>
-  
-      <!-- Check if there are favorite recipes -->
-      <div v-if="favorites.length === 0" class="no-favorites">
-        <p>You haven't added any favorite recipes yet.</p>
-      </div>
-  
-      <!-- Display favorite recipes in cards -->
-      <div v-else class="recipe-grid">
-        <div v-for="recipe in favorites" :key="recipe.id" class="recipe-card">
-          <img :src="recipe.image" alt="Recipe Image" class="recipe-img" />
-          <div class="recipe-info">
-            <h2>{{ recipe.name }}</h2>
-            <p>{{ recipe.description }}</p>
-            <b-button variant="danger" @click="removeFromFavorites(recipe.id)">Remove from Favorites</b-button>
-          </div>
-        </div>
-      </div>
+  <div class="main-container">
+    <br>
+    <h1>My Favorites</h1>
+    <div v-if="favoriteRecipes.length === 0">
+      <p>No favorite recipes yet.</p>
     </div>
-  </template>
-  
-  <script>
-  export default {
-    data() {
-      return {
-        favorites: []
-      };
-    },
-    methods: {
-      // Method to load favorite recipes
-      loadFavorites() {
-        const storedFavorites = localStorage.getItem("favorites");
-        if (storedFavorites) {
-          this.favorites = JSON.parse(storedFavorites);
-        }
-      },
-  
-      // Method to remove a recipe from favorites
-      removeFromFavorites(recipeId) {
-        this.favorites = this.favorites.filter(recipe => recipe.id !== recipeId);
-        localStorage.setItem("favorites", JSON.stringify(this.favorites)); // Update localStorage
+    <div v-else class="columns">
+      <!-- Display favorite recipes using a grid layout -->
+      <RecipePreviewList 
+        class="RandomRecipes recipe-preview-list" 
+        :recipes="favoriteRecipes"
+        @favorite-deleted="removeFavorite"
+      />
+    </div>
+  </div>
+</template>
+<script>
+import RecipePreviewList from '../components/RecipePreviewList.vue';
+import axios from 'axios';
+
+export default {
+  components: {
+    RecipePreviewList,
+  },
+  data() {
+    return {
+      favoriteRecipes: [],
+      user_id: localStorage.getItem('user_id') || '', // Ensure user_id is available
+    };
+  },
+  created() {
+    this.fetchFavoriteRecipes();
+  },
+  methods: {
+    async fetchFavoriteRecipes() {
+      if (!this.user_id) {
+        console.error('User ID is not defined');
+        return;
       }
-    },
-    mounted() {
-      this.loadFavorites(); // Load favorites when component is mounted
+      try {
+        const response = await axios.get(`http://localhost:3000/users/favorites`, {
+          params: { user_id: this.user_id },
+          withCredentials: true,
+        });
+        
+        if (response.data && Array.isArray(response.data)) {
+          this.favoriteRecipes = response.data;
+        } else {
+          console.warn('Unexpected data format received:', response.data);
+        }
+      } catch (error) {
+        console.error('Error fetching favorite recipes:', error);
+      }
     }
-  };
-  </script>
-  
-  <style lang="scss" scoped>
-  .favorite-page {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 20px;
-    text-align: center;
   }
-  
-  h1 {
-    color: #2c3e50;
-    font-size: 2.5rem;
-  }
-  
-  .no-favorites {
-    font-size: 1.2rem;
-    color: #7f8c8d;
-  }
-  
-  .recipe-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
-    margin-top: 20px;
-  }
-  
-  .recipe-card {
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    text-align: left;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-  
-  .recipe-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-  }
-  
-  .recipe-img {
-    width: 100%;
-    border-radius: 10px;
-    margin-bottom: 15px;
-  }
-  
-  .recipe-info h2 {
-    font-size: 1.5rem;
-    color: #3498db;
-    margin-bottom: 10px;
-  }
-  
-  .recipe-info p {
-    color: #7f8c8d;
-    margin-bottom: 15px;
-  }
-  </style>
-  
+};
+</script>
+
+
+
+<style scoped lang="scss">
+.main-container {
+  min-height: 100vh; /* Ensure full viewport height */
+  width: 100%; /* Full width of the viewport */
+  max-width: 1800px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 60px 20px; /* Added padding to account for the header/navbar */
+  color: #333;
+}
+
+h1 {
+  font-size: clamp(2.5rem, 5vw, 4rem); /* Responsive title */
+  text-align: center;
+  color: #333; /* Text color */
+  margin-bottom: 40px;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Set exactly 3 columns */
+  gap: 20px;
+  max-width: 1200px; /* Set max width for centering */
+  margin: 0 auto; /* Center the grid */
+  padding: 20px;
+}
+
+.recipe-preview-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.recipe-card {
+  background-color: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+  padding: 20px; /* Increase padding for better legibility */
+}
+
+.recipe-card:hover {
+  transform: scale(1.05); /* Slightly larger zoom on hover for better emphasis */
+}
+
+.recipe-card img {
+  width: 100%;
+  height: auto;
+  border-bottom: 1px solid #ddd;
+}
+
+.recipe-card-title {
+  padding: 15px;
+  height: auto;
+  font-size: 1.75rem; /* Slightly larger title */
+  text-align: center;
+}
+
+.recipe-card p {
+  font-size: 1.2rem; /* Increase the font size for readability */
+  margin: 10px 0;
+  text-align: center;
+}
+</style>

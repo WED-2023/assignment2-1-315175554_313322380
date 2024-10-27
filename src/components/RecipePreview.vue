@@ -20,8 +20,12 @@
     </router-link>
 
     <!-- Add Favorite Button -->
-    <b-button variant="success" @click.stop="addToFavorites(recipe.id)">
-      Add to Favorites
+    <b-button
+      variant="success"
+      class="mt-2"
+      @click.stop="toggleFavorite"
+    >
+      {{ isFavorite(recipe.id) ? 'Unfavorite' : 'Add to Favorites' }}
     </b-button>
   </div>
 </template>
@@ -34,14 +38,24 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      favorited: false, // Local state to track favorite status
+    };
+  },
   methods: {
     handleClick() {
       this.$emit('viewed', this.recipe);
     },
-    addToFavorites(recipeId) {
-      this.$emit('favorite', recipeId); // Emit event for favorite
+    toggleFavorite() {
+      this.favorited = !this.favorited;
+      this.$emit('favorite', this.recipe.id); // Emit event to parent
     },
-  },
+    isFavorite(recipeId) {
+      // Logic to determine if the recipe is already favorited
+      return this.favorited;
+    }
+  }
 };
 </script>
 
@@ -63,14 +77,14 @@ export default {
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
-.recipe-preview > .recipe-body {
+.recipe-body {
   width: 100%;
   height: 120px;
   position: relative;
   border-bottom: 1px solid #ddd;
 }
 
-.recipe-preview .recipe-image {
+.recipe-image {
   margin: auto;
   display: block;
   width: 100%;
@@ -80,14 +94,14 @@ export default {
   transition: opacity 0.3s ease;
 }
 
-.recipe-preview .recipe-footer {
+.recipe-footer {
   width: 100%;
   padding: 10px;
   background-color: #f9f9f9;
   overflow: hidden;
 }
 
-.recipe-preview .recipe-title {
+.recipe-title {
   padding: 5px 0;
   font-size: 14px;
   font-weight: bold;
@@ -97,7 +111,7 @@ export default {
   color: #3498db;
 }
 
-.recipe-preview .recipe-overview {
+.recipe-overview {
   padding: 5px 0;
   display: flex;
   justify-content: space-between;
@@ -107,11 +121,11 @@ export default {
   color: #666;
 }
 
-.recipe-preview .recipe-overview li {
+.recipe-overview li {
   text-align: center;
 }
 
-.recipe-preview .recipe-overview li:hover {
+.recipe-overview li:hover {
   color: #333;
 }
-</style> 
+</style>

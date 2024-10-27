@@ -70,9 +70,7 @@
 
 <script>
 import { required } from "vuelidate/lib/validators";
-//import {mockLogin} from "../services/auth.js"
-import axios from 'axios'; // Add this to import axios
-
+import axios from 'axios';
 
 export default {
   name: "Login",
@@ -81,19 +79,14 @@ export default {
       form: {
         username: "",
         password: "",
-        submitError: undefined  // This will store any error message
+        submitError: undefined
       }
     };
   },
-
   validations: {
     form: {
-      username: {
-        required
-      },
-      password: {
-        required
-      }
+      username: { required },
+      password: { required }
     }
   },
   methods: {
@@ -102,41 +95,30 @@ export default {
       return $dirty ? !$error : null;
     },
     async Login() {
-    try {
-      // Make the POST request using axios
-      const response = await axios.post('http://localhost:3000/auth/Login', {
-        username: this.form.username,  // Pass the username from the form data
-        password: this.form.password   // Pass the password from the form data
-      });
+      try {
+        const response = await axios.post('http://localhost:3000/auth/Login', {
+          username: this.form.username,
+          password: this.form.password
+        });
 
-      // If successful, log the response and redirect
-      console.log('Response data:', response.data);
-      this.$root.loggedIn = true;
-      this.$root.store.login(this.form.username); // Save the username in local storage
-      this.$router.push("/"); // Redirect to homepage
-    } catch (err) {
-      console.log(err.response);
-      this.form.submitError = err.response ? err.response.data.message : 'An error occurred';
-    }
-  },
-          
-        
-
+        this.$root.store.login(this.form.username);
+        localStorage.setItem("user_id", response.data.user_id); // Save user_id
+        this.$router.push("/"); // Redirect to homepage
+      } catch (err) {
+        this.form.submitError = err.response ? err.response.data.message : 'An error occurred';
+      }
+    },
 
     onLogin() {
-      // console.log("login method called");
       this.form.submitError = undefined;
       this.$v.form.$touch();
-      if (this.$v.form.$anyError) {
-        return;
-      }
-      // console.log("login method go");
-
+      if (this.$v.form.$anyError) return;
       this.Login();
     }
   }
 };
 </script>
+
 <style lang="scss" scoped>
 .container {
   max-width: 400px;
